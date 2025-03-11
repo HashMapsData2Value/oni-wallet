@@ -68,8 +68,8 @@ type WalletMenuProps = {
 	onClick: () => void;
 	manager: WalletManager;
 };
-export const WalletMenu = React.forwardRef<HTMLDivElement, any>(
-	(props: WalletMenuProps, ref) => {
+export const WalletMenu = React.forwardRef<HTMLDivElement, WalletMenuProps>(
+	(props, ref) => {
 		const { manager } = props;
 		return (
 			<DropdownMenu>
@@ -162,7 +162,9 @@ export function MobileLayout() {
 				<Drawer>
 					<WalletDrawer manager={manager} />
 					<DrawerTrigger asChild>
-						<WalletMenu manager={manager} />
+						<WalletMenu manager={manager} onClick={function (): void {
+							throw new Error("Function not implemented.");
+						}} />
 					</DrawerTrigger>
 				</Drawer>
 				<Bell className="ml-auto" />
@@ -180,22 +182,22 @@ export function MobileLayout() {
 					<MobileBottomNavLink
 						to="/"
 						icon={<Coins />}
-						// label="Account"
+					// label="Account"
 					/>
 					<MobileBottomNavLink
 						to="/explore"
 						icon={<Grid2X2 />}
-						// label="Explore"
+					// label="Explore"
 					/>
 					<MobileBottomNavLink
 						to="/activity"
 						icon={<ArrowLeftRight />}
-						// label="Activity"
+					// label="Activity"
 					/>
 					<MobileBottomNavLink
 						to="/settings"
 						icon={<Settings />}
-						// label="Settings"
+					// label="Settings"
 					/>
 				</div>
 			</nav>

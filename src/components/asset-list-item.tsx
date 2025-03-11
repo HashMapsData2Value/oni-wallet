@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button.tsx";
-import { ListItem, type ListItemProps } from "@/components/ui/list-item.tsx";
+import { ListItem } from "@/components/ui/list-item.tsx";
 import { ChevronRight } from "lucide-react";
 import { forwardRef } from "react";
 
@@ -8,10 +8,11 @@ export type AssetListItemProps = {
 	name: string;
 	amount: number;
 	logo: string;
+	onClick?: () => void;
 };
 
-export const AssetListItem = forwardRef<ListItemProps, any>(
-	({ index, name, amount, logo, ...props }: AssetListItemProps) => {
+export const AssetListItem = forwardRef<HTMLDivElement, AssetListItemProps>(
+	({ index, name, amount, logo, ...props }) => {
 		return (
 			<ListItem
 				id={index}

@@ -25,6 +25,7 @@ export default defineConfig(async () => ({
 	resolve: {
 		alias: {
 			"@": path.resolve(__dirname, "./src"),
+			buffer: "buffer",
 		},
 	},
 	// Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
@@ -38,10 +39,10 @@ export default defineConfig(async () => ({
 		host: host || false,
 		hmr: host
 			? {
-					protocol: "ws",
-					host,
-					port: 1421,
-				}
+				protocol: "ws",
+				host,
+				port: 1421,
+			}
 			: undefined,
 		watch: {
 			// 3. tell vite to ignore watching `src-tauri`

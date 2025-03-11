@@ -1,12 +1,12 @@
-import { Buffer } from "buffer";
+import { Buffer } from 'buffer';
 import {
 	makeAssetTransferTxnWithSuggestedParamsFromObject,
 	makePaymentTxnWithSuggestedParamsFromObject,
 	waitForConfirmation,
-} from "algosdk";
-import { z } from "zod";
+} from 'algosdk';
+import { z } from 'zod';
 
-import { Button } from "@/components/ui/button.tsx";
+import { Button } from '@/components/ui/button.tsx';
 import {
 	Form,
 	FormControl,
@@ -15,20 +15,20 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-} from "@/components/ui/form.tsx";
-import { Input } from "@/components/ui/input.tsx";
-import { Slider } from "@/components/ui/slider.tsx";
-import { useAccountWatcher } from "@/hooks/use-algorand/use-account-watcher.ts";
-import { manager } from "@/lib/manager.ts";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+} from '@/components/ui/form.tsx';
+import { Input } from '@/components/ui/input.tsx';
+import { Slider } from '@/components/ui/slider.tsx';
+import { useAccountWatcher } from '@/hooks/use-algorand/use-account-watcher.ts';
+import { manager } from '@/lib/manager.ts';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 
 const ALGO_DENOM = 1000000;
 
 export const formSchema = z.object({
-	receiver: z.string().min(5, { message: "Receiver must be 5 characters." }),
+	receiver: z.string().min(5, { message: 'Receiver must be 5 characters.' }),
 	assetId: z.number(),
-	quantity: z.number().min(1, { message: "Quantity must be at least 1." }),
+	quantity: z.number().min(1, { message: 'Quantity must be at least 1.' }),
 	notes: z.string(),
 });
 
@@ -36,28 +36,26 @@ export async function onSubmit(values: z.infer<typeof formSchema>) {
 	// Do something with the form values.
 	// ✅ This will be type-safe and validated.
 	const algodClient = manager.algodClient;
-	if (!manager.activeAddress) throw new Error("No active address");
+	if (!manager.activeAddress) throw new Error('No active address');
 	const suggestedParams = await manager.algodClient.getTransactionParams().do();
 	const txn =
 		values.assetId === 0
 			? makePaymentTxnWithSuggestedParamsFromObject({
-					from: manager.activeAddress,
-					suggestedParams,
-					to: values.receiver,
-					amount: values.quantity,
-					note: new Uint8Array(Buffer.from(values.notes)),
-				})
+				from: manager.activeAddress,
+				suggestedParams,
+				to: values.receiver,
+				amount: values.quantity,
+				note: new Uint8Array(Buffer.from(values.notes)),
+			})
 			: makeAssetTransferTxnWithSuggestedParamsFromObject({
-					from: manager.activeAddress,
-					suggestedParams,
-					assetIndex: values.assetId,
-					to: values.receiver,
-					amount: values.quantity,
-					note: new Uint8Array(Buffer.from(values.notes)),
-				});
-	const signedTxn = await manager
-		.signTransactions([txn])
-		.then((txns) => txns.filter((txn) => txn !== null));
+				from: manager.activeAddress,
+				suggestedParams,
+				assetIndex: values.assetId,
+				to: values.receiver,
+				amount: values.quantity,
+				note: new Uint8Array(Buffer.from(values.notes)),
+			});
+	const signedTxn = await manager.signTransactions([txn]).then((txns) => txns.filter((txn) => txn !== null));
 	const { txId } = await algodClient.sendRawTransaction(signedTxn).do();
 	const result = await waitForConfirmation(algodClient, txId, 4);
 	console.log(result);
@@ -69,14 +67,14 @@ export function SendTransactionForm() {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			receiver: "",
+			receiver: '',
 			assetId: 0,
 			quantity: 0,
-			notes: "",
+			notes: '',
 		},
 	});
 
-	if (query.isLoading || typeof query.data === "undefined") {
+	if (query.isLoading || typeof query.data === 'undefined') {
 		return <div>Loading...</div>;
 	}
 	return (
@@ -119,14 +117,10 @@ export function SendTransactionForm() {
 									min={0}
 									// Max should be (Min-Balance + Fee) - Balance
 									max={query.data.amount || 0}
-									onChange={(e: any) =>
-										form.setValue("quantity", Number.parseInt(e.target.value))
-									}
+									onChange={(e: any) => form.setValue('quantity', Number.parseInt(e.target.value))}
 								/>
 							</FormControl>
-							<FormDescription>
-								{form.getValues("quantity") / ALGO_DENOM} ALGO
-							</FormDescription>
+							<FormDescription>{form.getValues('quantity') / ALGO_DENOM} ALGO</FormDescription>
 							<FormMessage />
 						</FormItem>
 					)}

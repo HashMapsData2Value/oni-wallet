@@ -3,7 +3,7 @@ import type {
 	CustomProvider,
 	WalletAccount,
 	WalletManager,
-} from "@txnlab/use-wallet"; // Or any framework adapter
+} from "@txnlab/use-wallet-react"; // Or any framework adapter
 import type { Transaction } from "algosdk";
 import { generateAccount } from "algosdk";
 
